@@ -14,7 +14,7 @@ type Symbol interface {
 // Правило
 type Rule struct {
 	Left  nonterminal.NonTerminal
-	Right []Symbol
+	Right [][]Symbol
 }
 
 // Метод получения строки из правила

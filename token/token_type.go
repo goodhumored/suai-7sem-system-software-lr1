@@ -11,7 +11,7 @@ func (tokenType TokenType) GetName() string {
 var (
 	DelimiterType    = TokenType{"delimiter"}         // Разделитель
 	IdentifierType   = TokenType{"identifier"}        // Идентификатор
-	HexType          = TokenType{"hex_number"}        // Шестнадцатиричное число
+	ConstantType     = TokenType{"const_number"}      // Шестнадцатиричное число
 	AssignmentType   = TokenType{"assignment"}        // Присваивание
 	AndType          = TokenType{"and"}               // and
 	OrType           = TokenType{"or"}                // or

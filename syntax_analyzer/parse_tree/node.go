@@ -9,12 +9,13 @@ import (
 // Узел дерева вывода
 type Node struct {
 	Symbol   rule.Symbol
+	Value    string
 	Children []*Node
 }
 
 // Вспомогательная функция для создания пустого узла
 func CreateNode(s rule.Symbol) Node {
-	return Node{s, []*Node{}}
+	return Node{Symbol: s, Children: []*Node{}, Value: ""}
 }
 
 // Метод, добавляющий дочерний узел
@@ -36,24 +37,17 @@ func (node *Node) Reduce(rule rule.Rule) bool {
 	copy(nodes, node.Children[lenDiff:])
 
 	// перезаписываем дочерние узлы узла
-	node.Children = append(node.Children[:lenDiff], &Node{rule.Left, nodes})
+	node.Children = append(node.Children[:lenDiff], &Node{Symbol: rule.Left, Children: nodes, Value: ""})
 	return true
 }
 
 // Функция проверки возможности применения правила к дочерним узлам узла
-func (node Node) CanApplyRule(rule rule.Rule) bool {
-	lenDiff := len(node.Children) - len(rule.Right)
-	// Если в правиле больше элементов чем в узле - уходим
-	if lenDiff < 0 {
-		return false
+func (node Node) CanApplyRule(ruleToCheck rule.Rule) bool {
+	childrenSymbols := []rule.Symbol{}
+	for _, child := range node.Children {
+		childrenSymbols = append(childrenSymbols, child.Symbol)
 	}
-	// Проходимся по символам правила и сравниваем с дочерними символами
-	for i, rule := range rule.Right {
-		if rule.GetName() != node.Children[i+lenDiff].Symbol.GetName() {
-			return false
-		}
-	}
-	return true
+	return rule.IsApplyable(ruleToCheck.Right, childrenSymbols)
 }
 
 // Метод для рекурсивного вывода узлов дерева в консоль
@@ -67,7 +61,7 @@ func (node *Node) Print(prefix string, isTail bool) {
 		branch = "├── "
 		prefixSuffix = "│   "
 	}
-	fmt.Println(prefix + branch + node.Symbol.GetName())
+	fmt.Println(prefix + branch + node.Symbol.GetName() + " (" + node.Value + ")")
 
 	// Рекурсивно выводим дочерние узлы
 	for i := 0; i < len(node.Children)-1; i++ {

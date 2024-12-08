@@ -1,6 +1,7 @@
 package syntax_analyzer
 
 import (
+	"errors"
 	"fmt"
 
 	"goodhumored/lr1_object_code_generator/syntax_analyzer/nonterminal"
@@ -14,7 +15,7 @@ import (
 // Функция для анализа синтаксиса, принимает таблицу токенов, список правил и матрицу предшествования
 func AnalyzeSyntax(ruleTable rule.RuleTable, tokenTable token_table.TokenTable, matrix precedence.PrecedenceMatrix) (parse_tree.ParseTree, error) {
 	// Создаём дерево
-	rootNode := parse_tree.CreateNode(nonterminal.Null)
+	rootNode := parse_tree.CreateNode(nonterminal.Root)
 	tree := parse_tree.ParseTree{Root: &rootNode}
 	// Получаем лексемы из таблицы
 	tokens := tokenTable.GetTokens()
@@ -24,8 +25,11 @@ func AnalyzeSyntax(ruleTable rule.RuleTable, tokenTable token_table.TokenTable, 
 
 	for {
 		// Берём ближайший к вершине терминал
-		stackTerminal := stack.PeekNextTerminal()
+		stackTerminal := stack.PeekTopTerminal()
 		// Берём текущий символ входной строки
+		if len(tokens) <= tokenIndex {
+			return tree, errors.New("Токены закончились, до конца свернуть не удалось")
+		}
 		inputToken := tokens[tokenIndex]
 		// Если строка принята, значит возвращаем дерево вывода
 		if isInputAccepted(inputToken, stack) {
@@ -46,7 +50,8 @@ func AnalyzeSyntax(ruleTable rule.RuleTable, tokenTable token_table.TokenTable, 
 		// Если предшествование или =, тогда сдвигаем
 		if prec == precedence.Lt || prec == precedence.Eq {
 			print("Сдвигаем\n")
-			tree.AddNode(&parse_tree.Node{Symbol: inputToken, Children: []*parse_tree.Node{}}) // Добавляем узел в дерево
+			node := &parse_tree.Node{Value: inputToken.Value(), Symbol: inputToken, Children: []*parse_tree.Node{}}
+			tree.AddNode(node) // Добавляем узел в дерево
 			stack = stack.Push(inputToken)
 			tokenIndex += 1
 		} else if prec == precedence.Gt { // Иначе сворачиваем
@@ -69,13 +74,13 @@ func AnalyzeSyntax(ruleTable rule.RuleTable, tokenTable token_table.TokenTable, 
 
 // Проверка на завершённость
 func isInputAccepted(currentToken token.Token, stack symbolStack) bool {
-	nextTerminal := stack.PeekNextTerminal()
+	nextTerminal := stack.PeekTopTerminal()
 	nextSymbol := stack.Peek()
 	return currentToken.Type == token.EOFType && // Если дошли до конца строки
 		nextTerminal != nil &&
 		nextTerminal.Type == token.Start.Type && // Если ближайший терминал в стеке - начало строки
 		nextSymbol != nil &&
-		nextSymbol == nonterminal.E // А на вершине строки - целевой символ
+		nextSymbol == nonterminal.Assignment // А на вершине строки - целевой символ
 }
 
 // Функция свёртки стека

@@ -48,8 +48,8 @@ func (tt *TokenTable) String() string {
 		if len(token.Type.Name) > maxTypeLen {
 			maxTypeLen = len(token.Type.Name)
 		}
-		if len(token.Value) > maxValueLen {
-			maxValueLen = len(token.Value)
+		if len(token.Value()) > maxValueLen {
+			maxValueLen = len(token.Value())
 		}
 	}
 

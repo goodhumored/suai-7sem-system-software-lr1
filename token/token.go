@@ -11,7 +11,7 @@ type Position struct {
 // Структура Token представляет лексему с ее типом и значением
 type Token struct {
 	Type     TokenType // Тип
-	Value    string    // Значение
+	value    string    // Значение
 	Position Position  // Положение лексемы
 }
 
@@ -20,11 +20,15 @@ func (token Token) GetName() string {
 	return token.Type.GetName()
 }
 
+func (token Token) Value() string {
+	return token.value
+}
+
 // Фабричная функция для токенов, возвращающая замкнутую лямбда функцию для создания токена определённого типа
 func tokenFactory(tokenType TokenType) func(string, Position) Token {
 	return func(value string, position Position) Token {
 		return Token{
-			Value:    value,
+			value:    value,
 			Type:     tokenType,
 			Position: position,
 		}

@@ -34,7 +34,7 @@ func (s symbolStack) PeekN(n int) rule.Symbol {
 }
 
 // Поиск ближайшего к вершине терминала в стеке
-func (s symbolStack) PeekNextTerminal() *token.Token {
+func (s symbolStack) PeekTopTerminal() *token.Token {
 	for i := range s {
 		symbol := s.PeekN(i)
 		if token, ok := symbol.(token.Token); ok {
