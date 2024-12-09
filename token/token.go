@@ -37,7 +37,7 @@ func tokenFactory(tokenType TokenType) func(string, Position) Token {
 
 // Функция определяющая как токен преобразуется в строку
 func (token Token) String() string {
-	return fmt.Sprintf("%s (%s)", token.Type, token.Value)
+	return fmt.Sprintf("%s (%s)", token.Type, token.Value())
 }
 
 // Функции создания лексем определённых типов

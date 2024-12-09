@@ -28,7 +28,7 @@ func (tt *TokenTable) Print() {
 	if len(errors) > 0 {
 		errorMsg := ""
 		for _, error := range errors {
-			errorMsg += fmt.Sprintf("Неизвестный символ: %s \n", error.Value)
+			errorMsg += fmt.Sprintf("Неизвестный символ: %s \n", error.Value())
 		}
 		fmt.Println(fmt.Errorf(errorMsg))
 	}
@@ -60,7 +60,7 @@ func (tt *TokenTable) String() string {
 	// Собираем таблицу
 	res := border + "\n" + header + "\n" + border + "\n"
 	for _, token := range tt.tokens {
-		res += fmt.Sprintf("| %-*s | %-*s |\n", maxTypeLen, token.GetName(), maxValueLen, token.Value)
+		res += fmt.Sprintf("| %-*s | %-*s |\n", maxTypeLen, token.GetName(), maxValueLen, token.Value())
 	}
 	res += border
 

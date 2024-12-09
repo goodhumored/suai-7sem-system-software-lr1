@@ -41,7 +41,7 @@ func AnalyzeSyntax(ruleTable rule.RuleTable, tokenTable token_table.TokenTable, 
 			continue
 		}
 
-		fmt.Printf("Лексема: '%s' \n", tokens[tokenIndex].Value)
+		fmt.Printf("Лексема: '%s' \n", tokens[tokenIndex].Value())
 		fmt.Printf("Стек: %s \n", stack)
 
 		// Получаем предшествование из матрицы

@@ -4,7 +4,7 @@ import "strconv"
 
 type ConstantOperand struct{ value int }
 
-func (o ConstantOperand) Value() (int, error) {
+func (o ConstantOperand) Value() (any, error) {
 	return o.value, nil
 }
 

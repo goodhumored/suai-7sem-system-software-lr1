@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	codegenerator "goodhumored/lr1_object_code_generator/code_generator"
 	"goodhumored/lr1_object_code_generator/syntax_analyzer"
 	"goodhumored/lr1_object_code_generator/token_analyzer"
 )
@@ -41,6 +42,8 @@ func main() {
 	}
 
 	// запускаем генерацию объедкного кода
+	code := codegenerator.GenerateCode(tree)
+	fmt.Printf("Результирующий код:\n%v", code)
 }
 
 // Читает файл с входными данными, вызывает панику в случае неудачи

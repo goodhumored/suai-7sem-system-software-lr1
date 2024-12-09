@@ -8,6 +8,10 @@ func (o IdOperand) Hash() string {
 	return o.name
 }
 
+func (o IdOperand) String() string {
+	return o.name
+}
+
 func (o IdOperand) Value() (any, error) {
 	return nil, errors.New("no value")
 }
