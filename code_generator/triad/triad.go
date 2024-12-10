@@ -1,24 +1,20 @@
 package triad
 
-type Operand interface {
-	Value() (any, error)
-	Hash() string
-	String() string
-}
+import "goodhumored/lr1_object_code_generator/code_generator/triad/operand"
 
 type Triad interface {
-	Operand
+	operand.Operand
 	Number() int
 	SetNumber(nubmer int)
-	Left() Operand
-	Right() Operand
+	Left() operand.Operand
+	Right() operand.Operand
 	Hash() string
 }
 
 type baseTriad struct {
 	number int
-	left   Operand
-	right  Operand
+	left   operand.Operand
+	right  operand.Operand
 }
 
 func (t baseTriad) Number() int {
@@ -29,11 +25,11 @@ func (t *baseTriad) SetNumber(number int) {
 	t.number = number
 }
 
-func (t baseTriad) Left() Operand {
+func (t baseTriad) Left() operand.Operand {
 	return t.left
 }
 
-func (t baseTriad) Right() Operand {
+func (t baseTriad) Right() operand.Operand {
 	return t.right
 }
 

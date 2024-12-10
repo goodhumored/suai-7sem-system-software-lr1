@@ -1,8 +1,10 @@
-package triad
+package operand
 
-import "fmt"
+import (
+	"fmt"
+)
 
-type LinkOperand struct{ linkTo *Triad }
+type LinkOperand struct{ linkTo *Operand }
 
 func (o LinkOperand) Hash() string {
 	return (*o.linkTo).Hash()
@@ -16,8 +18,8 @@ func (o LinkOperand) Value() (any, error) {
 	return (*o.linkTo).Value()
 }
 
-func Link(triad *Triad) LinkOperand {
+func Link(triad Operand) LinkOperand {
 	return LinkOperand{
-		linkTo: triad,
+		linkTo: &triad,
 	}
 }

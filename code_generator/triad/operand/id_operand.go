@@ -1,4 +1,4 @@
-package triad
+package operand
 
 import "errors"
 

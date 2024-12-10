@@ -33,16 +33,20 @@ func main() {
 	}
 
 	// запускаем синтаксический анализатор
-	tree, error := syntax_analyzer.AnalyzeSyntax(rulesTable, *tokenTable, precedenceMatrix)
-	if error != nil {
-		fmt.Printf("Ошибка при синтаксическом анализе строки: %s", error)
+	tree, err := syntax_analyzer.AnalyzeSyntax(rulesTable, *tokenTable, precedenceMatrix)
+	if err != nil {
+		fmt.Printf("Ошибка при синтаксическом анализе строки: %s", err)
 	} else {
 		fmt.Println("Строка принята!!!")
 		tree.Print()
 	}
 
 	// запускаем генерацию объедкного кода
-	code := codegenerator.GenerateCode(tree)
+	code, err := codegenerator.GenerateCode(tree)
+	if err != nil {
+		fmt.Printf("Во время генерации кода возникли следующие ошибки: %v", err)
+	}
+	fmt.Printf("Результирующий код:\n%v", code)
 	fmt.Printf("Результирующий код:\n%v", code)
 }
 

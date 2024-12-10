@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"goodhumored/lr1_object_code_generator/code_generator/triad"
+	"goodhumored/lr1_object_code_generator/code_generator/triad/operand"
 	"goodhumored/lr1_object_code_generator/syntax_analyzer/nonterminal"
 	"goodhumored/lr1_object_code_generator/syntax_analyzer/parse_tree"
 	"goodhumored/lr1_object_code_generator/token"
@@ -14,14 +15,14 @@ func MapParseTreeToTriadList(tree parse_tree.ParseTree) []triad.Triad {
 	return triadList
 }
 
-func mapNodeToTriadList(node parse_tree.Node) ([]triad.Triad, triad.Operand) {
+func mapNodeToTriadList(node parse_tree.Node) ([]triad.Triad, operand.Operand) {
 	// fmt.Printf("Mapping operand %v\n", node.Symbol.GetName())
 	triads := []triad.Triad{}
-	var operand triad.Operand
+	var outputOperand operand.Operand
 	switch node.Symbol.GetName() {
 	case token.IdentifierType.Name:
 		// fmt.Printf("its identifier %s\n", node.Value)
-		operand = triad.Id(node.Value)
+		outputOperand = operand.Id(node.Value)
 	case nonterminal.Assignment.Name:
 		// fmt.Printf("assignment\n")
 		triads = append(triads, mapAssignment(node)...)
@@ -35,14 +36,14 @@ func mapNodeToTriadList(node parse_tree.Node) ([]triad.Triad, triad.Operand) {
 		for _, child := range node.Children {
 			childTriads, childOperand := mapNodeToTriadList(*child)
 			triads = append(triads, childTriads...)
-			operand = childOperand
+			outputOperand = childOperand
 		}
 	}
-	if len(triads) > 0 && operand == nil {
-		operand := triad.Link(&triads[len(triads)-1])
+	if len(triads) > 0 && outputOperand == nil {
+		operand := operand.Link(triads[len(triads)-1])
 		return triads, operand
 	}
-	return triads, operand
+	return triads, outputOperand
 }
 
 func mapBinary(node parse_tree.Node) []triad.Triad {
@@ -77,7 +78,7 @@ func mapBinary(node parse_tree.Node) []triad.Triad {
 func mapAssignment(node parse_tree.Node) []triad.Triad {
 	identifierOperandNode := node.Children[0]
 	rightOperandNode := node.Children[2]
-	identifierOperand := triad.Id(identifierOperandNode.Value)
+	identifierOperand := operand.Id(identifierOperandNode.Value)
 	rightTriads, rightOperand := mapNodeToTriadList(*rightOperandNode)
 	fmt.Printf("left: %s, right: %s\n", identifierOperand, rightOperand)
 	assignmentTriad := triad.Assignment(identifierOperand, rightOperand, 0)

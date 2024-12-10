@@ -1,6 +1,10 @@
 package triad
 
-import "errors"
+import (
+	"errors"
+
+	"goodhumored/lr1_object_code_generator/code_generator/triad/operand"
+)
 
 type LogicTriad struct {
 	baseTriad
@@ -27,7 +31,7 @@ func (t LogicTriad) Value() (any, error) {
 	return t.operation(leftIntVal, rightIntVal), nil
 }
 
-func Logic(number int, left Operand, right Operand, operation func(left int, right int) int) LogicTriad {
+func Logic(number int, left operand.Operand, right operand.Operand, operation func(left int, right int) int) LogicTriad {
 	return LogicTriad{
 		baseTriad: baseTriad{number: number, left: left, right: right},
 		operation: operation,
