@@ -27,7 +27,7 @@ func main() {
 	if errors := tokenTable.GetErrors(); len(errors) > 0 {
 		fmt.Printf("Во время лексического анализа было обнаружено: %d ошибок:\n", len(errors))
 		for _, error := range errors {
-			fmt.Printf("Неожиданный символ '%s'\n", error.Value)
+			fmt.Printf("Неожиданный символ '%s'\n", error.Value())
 		}
 		return
 	}
@@ -36,6 +36,7 @@ func main() {
 	tree, err := syntax_analyzer.AnalyzeSyntax(rulesTable, *tokenTable, precedenceMatrix)
 	if err != nil {
 		fmt.Printf("Ошибка при синтаксическом анализе строки: %s", err)
+		return
 	} else {
 		fmt.Println("Строка принята!!!")
 		tree.Print()
@@ -47,7 +48,7 @@ func main() {
 		fmt.Printf("Во время генерации кода возникли следующие ошибки: %v", err)
 	}
 	fmt.Printf("Результирующий код:\n%v", code)
-	fmt.Printf("Результирующий код:\n%v", code)
+	fmt.Printf("Исходный код: \n%s", source)
 }
 
 // Читает файл с входными данными, вызывает панику в случае неудачи

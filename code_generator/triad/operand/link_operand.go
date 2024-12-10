@@ -4,22 +4,22 @@ import (
 	"fmt"
 )
 
-type LinkOperand struct{ linkTo *Operand }
+type LinkOperand struct{ LinkTo *Operand }
 
 func (o LinkOperand) Hash() string {
-	return (*o.linkTo).Hash()
+	return fmt.Sprintf("^%v", o.LinkTo)
 }
 
 func (o LinkOperand) String() string {
-	return fmt.Sprintf("^%v", o.linkTo)
+	return fmt.Sprintf("^%v", o.LinkTo)
 }
 
 func (o LinkOperand) Value() (any, error) {
-	return (*o.linkTo).Value()
+	return (*o.LinkTo).Value()
 }
 
 func Link(triad Operand) LinkOperand {
 	return LinkOperand{
-		linkTo: &triad,
+		LinkTo: &triad,
 	}
 }
