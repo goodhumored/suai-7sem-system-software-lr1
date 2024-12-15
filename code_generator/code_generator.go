@@ -9,8 +9,8 @@ import (
 
 func GenerateCode(tree parse_tree.ParseTree) (string, error) {
 	triads := MapParseTreeToTriadList(tree)
-	for i, triad := range triads {
-		fmt.Printf("%d)%s\n", i, triad.String())
+	for _, triad := range triads.Triads() {
+		fmt.Printf("%d)%s\n", triad.Number(), triad.String())
 	}
 	var triadTranslator TriadTranslator
 	triadTranslator = asm8086triadtranslator.Asm8086TriadTranslator{}

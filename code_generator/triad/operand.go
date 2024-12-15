@@ -1,4 +1,4 @@
-package operand
+package triad
 
 type Operand interface {
 	Value() (any, error)

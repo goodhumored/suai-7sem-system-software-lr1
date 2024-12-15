@@ -5,41 +5,39 @@ import (
 	"fmt"
 
 	"goodhumored/lr1_object_code_generator/code_generator/triad"
-	"goodhumored/lr1_object_code_generator/code_generator/triad/operand"
 )
 
-type TriadCodeMap = map[string]string
+type TriadCodeMap = map[int]string
 
-func JoinCodes(m TriadCodeMap, keys []string) string {
+func JoinCodes(m TriadCodeMap) string {
 	codes := ""
-	for _, key := range keys {
-		codes += m[key] + "\n"
+	for i := 0; i < len(m); i++ {
+		codes += m[i] + "\n"
 	}
 	return codes
 }
 
 type Asm8086TriadTranslator struct{}
 
-func (t Asm8086TriadTranslator) TranslateTriads(triads []triad.Triad) (string, error) {
+func (t Asm8086TriadTranslator) TranslateTriads(triads triad.TriadList) (string, error) {
 	triadCodeMap := TriadCodeMap{}
 	mapKeys := []string{}
-	for _, triad := range triads {
+	for _, triad := range triads.Triads() {
 		mapKeys = append(mapKeys, triad.Hash())
 		triadCode, err := translateTriad(triad, triadCodeMap)
 		if err != nil {
 			return "", err
 		}
-		triadCodeMap[triad.Hash()] = triadCode
-		// fmt.Printf("map: %v\n", triadCodeMap)
+		triadCodeMap[triad.Number()] = triadCode
 	}
 
-	return JoinCodes(triadCodeMap, mapKeys), nil
+	return JoinCodes(triadCodeMap), nil
 }
 
 func translateTriad(triadToTranslate triad.Triad, triadCodeMap TriadCodeMap) (string, error) {
 	resultCode := ""
-	leftLinkOperand, leftOperandIsLink := triadToTranslate.Left().(operand.LinkOperand)
-	_, rightOperandIsLink := triadToTranslate.Right().(operand.LinkOperand)
+	leftLinkOperand, leftOperandIsLink := triadToTranslate.Left().(triad.LinkOperand)
+	_, rightOperandIsLink := triadToTranslate.Right().(triad.LinkOperand)
 	switch triadToTranslate.(type) {
 	case *triad.AssignmentTriad:
 		if rightOperandIsLink {
@@ -52,11 +50,11 @@ func translateTriad(triadToTranslate triad.Triad, triadCodeMap TriadCodeMap) (st
 			return "", err
 		}
 		if leftOperandIsLink && rightOperandIsLink {
-			triadLeftOperand, ok := (*leftLinkOperand.LinkTo).(triad.Triad)
+			triadLeftOperand, ok := triadCodeMap[leftLinkOperand.LinkTo]
 			if !ok {
 				return "", errors.New("link operand to non triad")
 			}
-			triadCodeMap[triadLeftOperand.Hash()] += "push ax\n"
+			triadLeftOperand += "push ax\n"
 			resultCode = fmt.Sprintf("mov dx,ax\npop ax\n%s ax,dx", act)
 		} else if leftOperandIsLink {
 			resultCode = fmt.Sprintf("%s ax,%s", act, triadToTranslate.Right())

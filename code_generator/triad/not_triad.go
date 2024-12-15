@@ -3,8 +3,6 @@ package triad
 import (
 	"errors"
 	"fmt"
-
-	"goodhumored/lr1_object_code_generator/code_generator/triad/operand"
 )
 
 type NotTriad struct {
@@ -29,7 +27,7 @@ func (t NotTriad) Value() (any, error) {
 	return 0, errors.New("no value")
 }
 
-func Not(operand operand.Operand, number int) NotTriad {
+func Not(operand Operand, number int) NotTriad {
 	return NotTriad{
 		baseTriad{
 			left:   operand,

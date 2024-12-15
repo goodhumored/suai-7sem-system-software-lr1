@@ -2,8 +2,6 @@ package triad
 
 import (
 	"fmt"
-
-	"goodhumored/lr1_object_code_generator/code_generator/triad/operand"
 )
 
 type AssignmentTriad struct {
@@ -18,7 +16,7 @@ func (t AssignmentTriad) Value() (any, error) {
 	return t.right.Value()
 }
 
-func Assignment(left operand.Operand, right operand.Operand, number int) AssignmentTriad {
+func Assignment(left Operand, right Operand, number int) AssignmentTriad {
 	return AssignmentTriad{
 		baseTriad{left: left, right: right, number: number},
 	}
