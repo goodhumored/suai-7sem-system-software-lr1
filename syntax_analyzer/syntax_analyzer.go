@@ -13,7 +13,7 @@ import (
 )
 
 // Функция для анализа синтаксиса, принимает таблицу токенов, список правил и матрицу предшествования
-func AnalyzeSyntax(ruleTable rule.RuleTable, tokenTable token_table.TokenTable, matrix precedence.PrecedenceMatrix) (parse_tree.ParseTree, error) {
+func AnalyzeSyntax(ruleTable rule.RuleTable, tokenTable token_table.TokenTable, matrix precedence.Matrix) (parse_tree.ParseTree, error) {
 	// Создаём дерево
 	rootNode := parse_tree.CreateNode(nonterminal.Root)
 	tree := parse_tree.ParseTree{Root: &rootNode}

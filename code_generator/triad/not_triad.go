@@ -15,7 +15,7 @@ func (t NotTriad) String() string {
 }
 
 func (t NotTriad) Hash() string {
-	return t.left.Hash()
+	return fmt.Sprintf("not_%s", t.left.Hash())
 }
 
 func (t NotTriad) Value() (any, error) {

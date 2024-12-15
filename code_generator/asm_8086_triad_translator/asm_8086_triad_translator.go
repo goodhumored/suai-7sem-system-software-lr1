@@ -12,7 +12,9 @@ type TriadCodeMap = map[int]string
 func JoinCodes(m TriadCodeMap) string {
 	codes := ""
 	for i := 0; i < len(m); i++ {
-		codes += m[i]
+		if len(m[i]) > 0 {
+			codes += fmt.Sprintf("%d:\n%s", i, m[i])
+		}
 	}
 	return codes
 }
@@ -55,11 +57,11 @@ func translateTriad(triadToTranslate triad.Triad, triadCodeMap TriadCodeMap) (st
 				return "", errors.New("link operand to non triad")
 			}
 			triadLeftOperand += "push ax\n"
-			resultCode = fmt.Sprintf("mov dx,ax\npop ax\n%s ax,dx", act)
+			resultCode = fmt.Sprintf("mov dx,ax\npop ax\n%s ax,dx\n", act)
 		} else if leftOperandIsLink {
 			resultCode = fmt.Sprintf("%s ax,%s\n", act, triadToTranslate.Right())
 		} else if rightOperandIsLink {
-			resultCode = fmt.Sprintf("mov dx,ax\nmov ax,%s\n%s ax,dx", triadToTranslate.Left().String(), act)
+			resultCode = fmt.Sprintf("mov dx,ax\nmov ax,%s\n%s ax,dx\n", triadToTranslate.Left().String(), act)
 		} else {
 			resultCode = fmt.Sprintf("mov ax,%s\n%s ax,%s\n", triadToTranslate.Left(), act, triadToTranslate.Right())
 		}
@@ -69,7 +71,7 @@ func translateTriad(triadToTranslate triad.Triad, triadCodeMap TriadCodeMap) (st
 		} else {
 			resultCode = fmt.Sprintf("mov ax,%s\nnot ax\n", triadToTranslate.Left())
 		}
-	case *triad.ConstantTriad:
+	case *triad.ConstantTriad, *triad.SameTriad:
 	default:
 		return "", fmt.Errorf("Неподдерживаемая триада %v\n", triadToTranslate)
 	}

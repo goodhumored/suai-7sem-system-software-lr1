@@ -8,6 +8,10 @@ type AndTriad struct {
 	LogicTriad
 }
 
+func (t AndTriad) Hash() string {
+	return fmt.Sprintf("and_%s_%s", t.left.Hash(), t.right.Hash())
+}
+
 func (t AndTriad) String() string {
 	return fmt.Sprintf("and(%s,%s)", t.left.String(), t.right.String())
 }

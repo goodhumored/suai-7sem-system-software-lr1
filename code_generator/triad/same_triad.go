@@ -1,7 +1,10 @@
 package triad
 
+import "fmt"
+
 type SameTriad struct {
 	baseTriad
+	SameAs Triad
 }
 
 func (t SameTriad) Value() (any, error) {
@@ -12,8 +15,13 @@ func (t SameTriad) Hash() string {
 	return t.left.Hash()
 }
 
+func (t SameTriad) String() string {
+	return fmt.Sprintf("Same(%d,)", t.SameAs.Number())
+}
+
 func Same(triad Triad, number int) SameTriad {
 	return SameTriad{
-		baseTriad{number: number, left: triad, right: nil},
+		baseTriad: baseTriad{number: number, left: triad, right: nil},
+		SameAs:    triad,
 	}
 }

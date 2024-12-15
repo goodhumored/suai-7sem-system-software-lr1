@@ -1,24 +1,22 @@
 package precedence
 
 import (
-	"fmt"
-
 	"goodhumored/lr1_object_code_generator/token"
 )
 
+type Row = map[token.TokenType]PrecedenceType
+
 // Матрица предшествования
-type PrecedenceMatrix map[token.TokenType]map[token.TokenType]PrecedenceType
+type Matrix map[token.TokenType]Row
 
 // Метод для поиска типа предшествования для двух терминалов
-func (matrix PrecedenceMatrix) GetPrecedence(left, right token.TokenType) PrecedenceType {
-	fmt.Printf("rigght: %v, left: %v", right, left)
+func (matrix Matrix) GetPrecedence(left, right token.TokenType) PrecedenceType {
 	// Если левый символ - начало файла, возвращаем предшествие
 	if left == token.StartType {
 		return Lt
 	}
 	// Если правый символ - конец файла, возвращаем следствие
 	if right == token.EOFType {
-		fmt.Print("aaaaaaaaaaaaaa")
 		return Gt
 	}
 	// Если находится - возвращаем

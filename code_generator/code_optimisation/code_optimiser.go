@@ -11,4 +11,8 @@ func OptimiseCode(triadList *triad.TriadList) {
 	fmt.Println("\nafter folding constants:")
 	triadList.Print()
 	println()
+	eliminateCommonSubexpression(triadList)
+	fmt.Println("\nafter common subexpression elimination")
+	triadList.Print()
+	println()
 }

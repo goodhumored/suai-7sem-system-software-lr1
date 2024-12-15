@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	source := getInput("./input-hard.txt") // читаем файл
+	source := getInput("./input-subexpr-test.txt") // читаем файл
 
 	// выводим содержимое
 	println("Содержимое входного файла:\n")

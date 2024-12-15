@@ -8,6 +8,10 @@ type OrTriad struct {
 	LogicTriad
 }
 
+func (t OrTriad) Hash() string {
+	return fmt.Sprintf("or_%s_%s", t.left.Hash(), t.right.Hash())
+}
+
 func (t OrTriad) String() string {
 	return fmt.Sprintf("or(%s,%s)", t.left.String(), t.right.String())
 }
