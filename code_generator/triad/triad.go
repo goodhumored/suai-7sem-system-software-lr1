@@ -5,6 +5,8 @@ type Triad interface {
 	Number() int
 	SetNumber(nubmer int)
 	Left() Operand
+	SetLeft(Operand)
+	SetRight(Operand)
 	Right() Operand
 	Hash() string
 }
@@ -21,6 +23,14 @@ func (t baseTriad) Number() int {
 
 func (t *baseTriad) SetNumber(number int) {
 	t.number = number
+}
+
+func (t *baseTriad) SetLeft(newLeft Operand) {
+	t.left = newLeft
+}
+
+func (t *baseTriad) SetRight(newRight Operand) {
+	t.right = newRight
 }
 
 func (t baseTriad) Left() Operand {

@@ -8,6 +8,10 @@ type AssignmentTriad struct {
 	baseTriad
 }
 
+func (t AssignmentTriad) Hash() string {
+	return t.left.String()
+}
+
 func (t AssignmentTriad) String() string {
 	return fmt.Sprintf(":=(%s,%s)", t.left.String(), t.right.String())
 }

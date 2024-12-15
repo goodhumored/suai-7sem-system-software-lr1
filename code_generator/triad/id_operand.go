@@ -1,7 +1,5 @@
 package triad
 
-import "errors"
-
 type IdOperand struct{ name string }
 
 func (o IdOperand) Hash() string {
@@ -13,7 +11,7 @@ func (o IdOperand) String() string {
 }
 
 func (o IdOperand) Value() (any, error) {
-	return nil, errors.New("no value")
+	return o.name, nil
 }
 
 func Id(name string) IdOperand {

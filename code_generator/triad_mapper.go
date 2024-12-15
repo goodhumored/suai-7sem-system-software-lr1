@@ -1,8 +1,6 @@
 package codegenerator
 
 import (
-	"fmt"
-
 	"goodhumored/lr1_object_code_generator/code_generator/triad"
 	"goodhumored/lr1_object_code_generator/syntax_analyzer/nonterminal"
 	"goodhumored/lr1_object_code_generator/syntax_analyzer/parse_tree"
@@ -56,7 +54,7 @@ func mapBinary(node parse_tree.Node, triads *triad.TriadList) {
 		binaryTriad = &t
 	case "and":
 		t := triad.And(operand1, operand2, 0)
-		fmt.Printf("%v\n", t)
+		// fmt.Printf("%v\n", t)
 		binaryTriad = &t
 	case "xor":
 		t := triad.Xor(operand1, operand2, 0)
@@ -70,7 +68,7 @@ func mapAssignment(node parse_tree.Node, triads *triad.TriadList) {
 	rightOperandNode := node.Children[2]
 	identifierOperand := triad.Id(identifierOperandNode.Value)
 	rightOperand := mapNodeToTriadList(*rightOperandNode, triads)
-	fmt.Printf("left: %s, right: %s\n", identifierOperand, rightOperand)
+	// fmt.Printf("left: %s, right: %s\n", identifierOperand, rightOperand)
 	assignmentTriad := triad.Assignment(identifierOperand, rightOperand, 0)
 	triads.Add(&assignmentTriad)
 }

@@ -1,5 +1,7 @@
 package triad
 
+import "fmt"
+
 type TriadList struct {
 	list   []Triad
 	length int
@@ -15,8 +17,18 @@ func (l TriadList) Triads() []Triad {
 	return l.list
 }
 
+func (l TriadList) Print() {
+	for _, triad := range l.Triads() {
+		fmt.Printf("%d)%s\n", triad.Number(), triad.String())
+	}
+}
+
 func (l TriadList) GetElement(n int) Triad {
 	return l.list[n]
+}
+
+func (l *TriadList) SetElement(n int, triad Triad) {
+	l.list[n] = triad
 }
 
 func (l TriadList) Remove(number int) {

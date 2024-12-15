@@ -47,7 +47,7 @@ func main() {
 	if err != nil {
 		fmt.Printf("Во время генерации кода возникли следующие ошибки: %v", err)
 	}
-	fmt.Printf("Результирующий код:\n%v", code)
+	fmt.Printf("Результирующий код:\n%v\n", code)
 	fmt.Printf("Исходный код: \n%s", source)
 }
 
