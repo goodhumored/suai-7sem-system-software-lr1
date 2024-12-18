@@ -1,8 +1,6 @@
 package code_optimisation
 
 import (
-	"fmt"
-
 	"goodhumored/lr1_object_code_generator/code_generator/triad"
 )
 
@@ -19,7 +17,7 @@ func eliminateCommonSubexpression(triads *triad.TriadList) {
 	triadTable := map[string]triadDependencyTableItem{}
 	for i, t := range triads.Triads() {
 		updateDep := true
-		fmt.Printf("\ntriad: %v\n", t)
+		// fmt.Printf("\ntriad: %v\n", t)
 		leftOperand, ok := checkSameOperand(t.Left(), *triads)
 		if ok {
 			t.SetLeft(leftOperand)
@@ -32,11 +30,11 @@ func eliminateCommonSubexpression(triads *triad.TriadList) {
 		rightDependency := getOperandDep(rightOperand, operandTable, *triads)
 
 		triadDependency := max(leftDependency, rightDependency) + 1
-		fmt.Printf("hash is %s\n", t.Hash())
+		// fmt.Printf("hash is %s\n", t.Hash())
 		if dependency, ok := triadTable[t.Hash()]; ok {
-			fmt.Printf("have dep: %v, calculated is %v\n", dependency, triadDependency)
+			// fmt.Printf("have dep: %v, calculated is %v\n", dependency, triadDependency)
 			if dependency.dependencyNumber == triadDependency {
-				fmt.Printf("they are same!!!!!!!!\n")
+				// fmt.Printf("they are same!!!!!!!!\n")
 				sameTriad := triad.Same(triads.GetElement(dependency.triad.Number()), i)
 				triads.SetElement(i, &sameTriad)
 				updateDep = false
@@ -48,7 +46,7 @@ func eliminateCommonSubexpression(triads *triad.TriadList) {
 		if updateDep {
 			triadTable[t.Hash()] = triadDependencyTableItem{t, triadDependency}
 		}
-		fmt.Printf("tables: %v,\n%v\n", operandTable, triadTable)
+		// fmt.Printf("tables: %v,\n%v\n", operandTable, triadTable)
 	}
 }
 
@@ -68,15 +66,15 @@ func getOperandDep(operand triad.Operand, table dependencyTable, triads triad.Tr
 	if operand != nil {
 		if link, ok := operand.(triad.LinkOperand); ok {
 			linkedTriad := triads.GetElement(link.LinkTo)
-			fmt.Printf("operand %v (%s)\n", linkedTriad, linkedTriad.Hash())
+			// fmt.Printf("operand %v (%s)\n", linkedTriad, linkedTriad.Hash())
 			triadDep, ok := table[linkedTriad.Hash()]
 			if ok {
 				return triadDep
 			}
 		}
-	}
-	if dep, ok := table[operand.Hash()]; ok {
-		return dep
+		if dep, ok := table[operand.Hash()]; ok {
+			return dep
+		}
 	}
 	return 0
 }

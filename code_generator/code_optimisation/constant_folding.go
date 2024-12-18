@@ -2,6 +2,7 @@ package code_optimisation
 
 import (
 	"errors"
+	"fmt"
 
 	"goodhumored/lr1_object_code_generator/code_generator/triad"
 )
@@ -38,7 +39,7 @@ func tryGettingValueAndUpdateTriadList(t triad.Triad, list *triad.TriadList, tab
 }
 
 func checkAndUpdateLeftOperand(t triad.Triad, list *triad.TriadList, table *constantTable) {
-	if strVal, ok := checkOperand(t.Left(), list); ok {
+	if strVal, ok := tryGettingOperandValue(t.Left(), list); ok {
 		t.SetLeft(triad.Id(strVal))
 	}
 	if value, ok := (*table)[t.Left().Hash()]; ok {
@@ -50,15 +51,17 @@ func checkAndUpdateRightOperand(t triad.Triad, list *triad.TriadList, table *con
 	if t.Right() == nil {
 		return
 	}
-	if strVal, ok := checkOperand(t.Right(), list); ok {
+	if strVal, ok := tryGettingOperandValue(t.Right(), list); ok {
 		t.SetRight(triad.Id(strVal))
 	}
+	fmt.Printf("RIght operand hash: %s\n", t.Right().Hash())
 	if value, ok := (*table)[t.Right().Hash()]; ok {
-		t.SetLeft(triad.Id(value))
+		fmt.Printf("have it in table\n")
+		t.SetRight(triad.Id(value))
 	}
 }
 
-func checkOperand(operand triad.Operand, list *triad.TriadList) (string, bool) {
+func tryGettingOperandValue(operand triad.Operand, list *triad.TriadList) (string, bool) {
 	if linkOperand, ok := operand.(triad.LinkOperand); ok {
 		linkedTriad := list.GetElement(linkOperand.LinkTo)
 		if constant, ok := linkedTriad.(*triad.ConstantTriad); ok {

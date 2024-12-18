@@ -1,3 +1,6 @@
+id2 := 0xAAA;
+id3 := 0xFFF;
+id4 := 0x00;
 id4 := id4 or (id3 and id2);
 id1 := id4 or (id3 and id2);
 id3 := id4 or (id3 and id2);

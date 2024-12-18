@@ -8,11 +8,11 @@ import (
 
 func OptimiseCode(triadList *triad.TriadList) {
 	foldConstants(triadList)
-	fmt.Println("\nafter folding constants:")
+	fmt.Println("\nПосле свёртки констант:")
 	triadList.Print()
 	println()
 	eliminateCommonSubexpression(triadList)
-	fmt.Println("\nafter common subexpression elimination")
+	fmt.Println("После удаления лишнего кода:")
 	triadList.Print()
 	println()
 }

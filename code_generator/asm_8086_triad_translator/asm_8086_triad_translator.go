@@ -7,75 +7,53 @@ import (
 	"goodhumored/lr1_object_code_generator/code_generator/triad"
 )
 
-type TriadCodeMap = map[int]string
-
-func JoinCodes(m TriadCodeMap) string {
-	codes := ""
-	for i := 0; i < len(m); i++ {
-		if len(m[i]) > 0 {
-			codes += fmt.Sprintf("%d:\n%s", i, m[i])
-		}
-	}
-	return codes
-}
-
 type Asm8086TriadTranslator struct{}
 
 func (t Asm8086TriadTranslator) TranslateTriads(triads triad.TriadList) (string, error) {
-	triadCodeMap := TriadCodeMap{}
+	code := ""
 	mapKeys := []string{}
 	for _, triad := range triads.Triads() {
 		mapKeys = append(mapKeys, triad.Hash())
-		triadCode, err := translateTriad(triad, triadCodeMap)
+		triadCode, err := translateTriad(triad)
 		if err != nil {
 			return "", err
 		}
-		triadCodeMap[triad.Number()] = triadCode
+		code += triadCode
 	}
 
-	return JoinCodes(triadCodeMap), nil
+	return code, nil
 }
 
-func translateTriad(triadToTranslate triad.Triad, triadCodeMap TriadCodeMap) (string, error) {
+func translateTriad(triadToTranslate triad.Triad) (string, error) {
 	resultCode := ""
-	leftLinkOperand, leftOperandIsLink := triadToTranslate.Left().(triad.LinkOperand)
-	_, rightOperandIsLink := triadToTranslate.Right().(triad.LinkOperand)
 	switch triadToTranslate.(type) {
 	case *triad.AssignmentTriad:
-		if rightOperandIsLink {
-			return fmt.Sprintf("mov %s,ax\n", triadToTranslate.Left()), nil
-		}
-		return fmt.Sprintf("mov %s,%s\n", triadToTranslate.Left(), triadToTranslate.Right()), nil
+		return fmt.Sprintf("mov %s,%s\n", stringifyOperand(triadToTranslate.Left()), stringifyOperand(triadToTranslate.Right())), nil
 	case *triad.AndTriad, *triad.OrTriad, *triad.XorTriad:
-		act, err := getActFromBinaryTriad(triadToTranslate)
-		if err != nil {
-			return "", err
-		}
-		if leftOperandIsLink && rightOperandIsLink {
-			triadLeftOperand, ok := triadCodeMap[leftLinkOperand.LinkTo]
-			if !ok {
-				return "", errors.New("link operand to non triad")
-			}
-			triadLeftOperand += "push ax\n"
-			resultCode = fmt.Sprintf("mov dx,ax\npop ax\n%s ax,dx\n", act)
-		} else if leftOperandIsLink {
-			resultCode = fmt.Sprintf("%s ax,%s\n", act, triadToTranslate.Right())
-		} else if rightOperandIsLink {
-			resultCode = fmt.Sprintf("mov dx,ax\nmov ax,%s\n%s ax,dx\n", triadToTranslate.Left().String(), act)
-		} else {
-			resultCode = fmt.Sprintf("mov ax,%s\n%s ax,%s\n", triadToTranslate.Left(), act, triadToTranslate.Right())
-		}
+		act, _ := getActFromBinaryTriad(triadToTranslate)
+		resultCode = fmt.Sprintf("mov ax,%s\n%s ax,%s\nmov tmp%d,ax\n", stringifyOperand(triadToTranslate.Left()), act, stringifyOperand(triadToTranslate.Right()), triadToTranslate.Number())
 	case *triad.NotTriad:
-		if leftOperandIsLink {
-			resultCode += fmt.Sprintf("not ax\n")
-		} else {
-			resultCode = fmt.Sprintf("mov ax,%s\nnot ax\n", triadToTranslate.Left())
-		}
+		resultCode = fmt.Sprintf("mov ax,%s\nnot ax\n", stringifyOperand(triadToTranslate.Left()))
 	case *triad.ConstantTriad, *triad.SameTriad:
 	default:
 		return "", fmt.Errorf("Неподдерживаемая триада %v\n", triadToTranslate)
 	}
 	return resultCode, nil
+}
+
+func stringifyOperand(operand triad.Operand) string {
+	if operand == nil {
+		return ""
+	}
+	if linkOperand, ok := operand.(triad.LinkOperand); ok {
+		return fmt.Sprintf("tmp%d", linkOperand.LinkTo)
+	}
+	if val, err := operand.Value(); err == nil {
+		if strVal, ok := val.(string); ok {
+			return strVal
+		}
+	}
+	return ""
 }
 
 func getActFromBinaryTriad(t triad.Triad) (string, error) {
