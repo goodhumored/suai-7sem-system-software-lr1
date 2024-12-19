@@ -7,8 +7,10 @@ import (
 	"goodhumored/lr1_object_code_generator/code_generator/triad"
 )
 
+// Транслятор внутреннего представления в объектный код asm 8086
 type Asm8086TriadTranslator struct{}
 
+// метод транслятора для перевода триад в результирующий код
 func (t Asm8086TriadTranslator) TranslateTriads(triads triad.TriadList) (string, error) {
 	code := ""
 	mapKeys := []string{}
@@ -24,6 +26,7 @@ func (t Asm8086TriadTranslator) TranslateTriads(triads triad.TriadList) (string,
 	return code, nil
 }
 
+// Функция для перевода триады в асм
 func translateTriad(triadToTranslate triad.Triad) (string, error) {
 	resultCode := ""
 	switch triadToTranslate.(type) {
@@ -41,6 +44,7 @@ func translateTriad(triadToTranslate triad.Triad) (string, error) {
 	return resultCode, nil
 }
 
+// Вспомогательная функция для получения строкового представления операнда для транслятора асм8086
 func stringifyOperand(operand triad.Operand) string {
 	if operand == nil {
 		return ""
@@ -56,6 +60,7 @@ func stringifyOperand(operand triad.Operand) string {
 	return ""
 }
 
+// функция получения строкового представления оператора из триады для транслятора в асм 8086
 func getActFromBinaryTriad(t triad.Triad) (string, error) {
 	switch t.(type) {
 	case *triad.AndTriad:

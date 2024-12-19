@@ -7,12 +7,14 @@ import (
 	"goodhumored/lr1_object_code_generator/token"
 )
 
+// функция преобразования дерева вывода в список триад
 func MapParseTreeToTriadList(tree parse_tree.ParseTree) triad.TriadList {
 	triads := triad.NewTriadList()
 	_ = mapNodeToTriadList(*tree.Root, &triads)
 	return triads
 }
 
+// функция преобразования узла дерева вывода в список триад
 func mapNodeToTriadList(node parse_tree.Node, triads *triad.TriadList) triad.Operand {
 	makeLink := true
 	var outputOperand triad.Operand
@@ -39,6 +41,7 @@ func mapNodeToTriadList(node parse_tree.Node, triads *triad.TriadList) triad.Ope
 	return outputOperand
 }
 
+// функция преобразования бинарной операции в триаду
 func mapBinary(node parse_tree.Node, triads *triad.TriadList) {
 	operator := node.Children[1]
 	operandNode1 := node.Children[0]
@@ -54,7 +57,6 @@ func mapBinary(node parse_tree.Node, triads *triad.TriadList) {
 		binaryTriad = &t
 	case "and":
 		t := triad.And(operand1, operand2, 0)
-		// fmt.Printf("%v\n", t)
 		binaryTriad = &t
 	case "xor":
 		t := triad.Xor(operand1, operand2, 0)
@@ -63,16 +65,17 @@ func mapBinary(node parse_tree.Node, triads *triad.TriadList) {
 	triads.Add(binaryTriad)
 }
 
+// функция преобразования операции присвоения в триаду
 func mapAssignment(node parse_tree.Node, triads *triad.TriadList) {
 	identifierOperandNode := node.Children[0]
 	rightOperandNode := node.Children[2]
 	identifierOperand := triad.Id(identifierOperandNode.Value)
 	rightOperand := mapNodeToTriadList(*rightOperandNode, triads)
-	// fmt.Printf("left: %s, right: %s\n", identifierOperand, rightOperand)
 	assignmentTriad := triad.Assignment(identifierOperand, rightOperand, 0)
 	triads.Add(&assignmentTriad)
 }
 
+// функция преобразования унарной операции в триаду
 func mapUnary(node parse_tree.Node, triads *triad.TriadList) {
 	operandNode := node.Children[2]
 	operand := mapNodeToTriadList(*operandNode, triads)

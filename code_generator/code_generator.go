@@ -9,6 +9,7 @@ import (
 	"goodhumored/lr1_object_code_generator/syntax_analyzer/parse_tree"
 )
 
+// Функция генерации обектного кода на основе дерева вывода
 func GenerateCode(tree parse_tree.ParseTree) (string, error) {
 	var triadTranslator TriadTranslator
 	triadTranslator = asm8086triadtranslator.Asm8086TriadTranslator{}

@@ -9,14 +9,16 @@ import (
 
 type constantTable = map[string]string
 
+// Функция реализующая алгоритм оптимизации методом свёртки констант
 func foldConstants(triadList *triad.TriadList) {
 	table := make(constantTable)
 	for _, t := range triadList.Triads() {
-		// fmt.Printf("table: %v\n", table)
 		tryGettingValueAndUpdateTriadList(t, triadList, &table)
 	}
 }
 
+// функция, которая пробует сосчитать значение триады и заменяет её на C(значение,)
+// ссылки на другие C() триады функция заменяет на значения внутри них
 func tryGettingValueAndUpdateTriadList(t triad.Triad, list *triad.TriadList, table *constantTable) (string, error) {
 	switch t.(type) {
 	case *triad.AssignmentTriad:
@@ -26,18 +28,16 @@ func tryGettingValueAndUpdateTriadList(t triad.Triad, list *triad.TriadList, tab
 		}
 	case *triad.OrTriad, *triad.AndTriad, *triad.XorTriad, *triad.NotTriad:
 		checkAndUpdateLeftOperand(t, list, table)
-		// fmt.Printf("left operand value: %v\n", t.Left())
 		checkAndUpdateRightOperand(t, list, table)
-		// fmt.Printf("right operand value: %v\n", t.Right())
 		if val, ok := tryGetTriadValue(t); ok {
 			constTriad := triad.C(t.Number(), val)
 			list.SetElement(t.Number(), &constTriad)
 		}
 	}
-	// fmt.Printf("triad: %v\n", t)
 	return "", errors.New("no value")
 }
 
+// функция для проверки левого операнда на возможность получения значения
 func checkAndUpdateLeftOperand(t triad.Triad, list *triad.TriadList, table *constantTable) {
 	if strVal, ok := tryGettingOperandValue(t.Left(), list); ok {
 		t.SetLeft(triad.Id(strVal))
@@ -47,6 +47,7 @@ func checkAndUpdateLeftOperand(t triad.Triad, list *triad.TriadList, table *cons
 	}
 }
 
+// функция для проверки правого операнда на возможность получения значения
 func checkAndUpdateRightOperand(t triad.Triad, list *triad.TriadList, table *constantTable) {
 	if t.Right() == nil {
 		return
@@ -61,6 +62,7 @@ func checkAndUpdateRightOperand(t triad.Triad, list *triad.TriadList, table *con
 	}
 }
 
+// функция для проверки операнда на ссылание на константную триаду
 func tryGettingOperandValue(operand triad.Operand, list *triad.TriadList) (string, bool) {
 	if linkOperand, ok := operand.(triad.LinkOperand); ok {
 		linkedTriad := list.GetElement(linkOperand.LinkTo)
@@ -73,6 +75,8 @@ func tryGettingOperandValue(operand triad.Operand, list *triad.TriadList) (strin
 	return "", false
 }
 
+// функция пробует получить значение триады (например для триад бинарных операций),
+// возвращает значение и то было ли это успешно
 func tryGetTriadValue(t triad.Triad) (string, bool) {
 	if value, err := t.Value(); err == nil {
 		strVal, ok := value.(string)
