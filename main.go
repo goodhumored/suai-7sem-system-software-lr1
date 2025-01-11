@@ -12,7 +12,7 @@ import (
 func main() {
 	source := getInput("./input-subexpr-test.txt") // читаем файл
 
-	// выводим содержимое
+	// выводим содержимо
 	println("Содержимое входного файла:\n")
 	fmt.Println(source)
 

@@ -28,6 +28,7 @@ func (l TriadList) GetElement(n int) Triad {
 }
 
 func (l *TriadList) SetElement(n int, triad Triad) {
+	fmt.Printf("setting triad %d)%v to %v\n", n, l.list[n], triad)
 	l.list[n] = triad
 }
 

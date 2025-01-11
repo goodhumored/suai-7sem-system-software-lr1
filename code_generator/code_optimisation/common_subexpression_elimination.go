@@ -1,6 +1,8 @@
 package code_optimisation
 
 import (
+	"fmt"
+
 	"goodhumored/lr1_object_code_generator/code_generator/triad"
 )
 
@@ -32,6 +34,7 @@ func eliminateCommonSubexpression(triads *triad.TriadList) {
 		triadDependency := max(leftDependency, rightDependency) + 1
 		if dependency, ok := triadTable[t.Hash()]; ok {
 			if dependency.dependencyNumber == triadDependency {
+				fmt.Printf("triad %s has same previous occusion\n", t.Hash())
 				sameTriad := triad.Same(triads.GetElement(dependency.triad.Number()), i)
 				triads.SetElement(i, &sameTriad)
 				updateDep = false

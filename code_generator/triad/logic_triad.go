@@ -35,14 +35,20 @@ func parseOperand(operand Operand) (int, bool) {
 	if !ok {
 		return 0, false
 	}
-	if len(strVal) > 1 && strVal[1] == 'x' {
-		strVal = strVal[2:]
-	}
-	intVal, err := strconv.ParseInt(strVal, 16, 32)
+	intVal, err := convertStrToNumber(strVal)
 	if err != nil {
 		return 0, false
 	}
 	return int(intVal), true
+}
+
+func convertStrToNumber(str string) (int64, error) {
+	base := 10
+	if len(str) > 1 && str[1] == 'x' {
+		str = str[2:]
+		base = 16
+	}
+	return strconv.ParseInt(str, base, 32)
 }
 
 func Logic(number int, left Operand, right Operand, operation func(left int, right int) int) LogicTriad {

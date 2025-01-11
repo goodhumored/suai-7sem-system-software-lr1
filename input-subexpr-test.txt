@@ -1,6 +1,3 @@
-id2 := 0xAAA;
-id3 := 0xfff;
-id4 := 0x000;
 id4 := id4 or (id3 and id2);
 id1 := id4 or (id3 and id2);
 id3 := id4 or (id3 and id2);
